@@ -49,6 +49,14 @@ RUN     echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/ALL \
 
 COPY Dockerfile LICENSE README.md /frx/
 
+ARG DOCKER_TAG
+ARG SOURCE_BRANCH
+ARG SOURCE_COMMIT
+COPY build/desktop /usr/local/sbin/frx-desktop
+RUN     echo "[frxyt/xrdp:${DOCKER_TAG}] <https://github.com/frxyt/docker-xrdp>" > /frx/version \
+    &&  echo -e "[Version: ${SOURCE_BRANCH}@${SOURCE_COMMIT}]\n" >> /frx/version \
+    &&  /usr/local/sbin/frx-desktop ${DOCKER_TAG}
+
 EXPOSE 22
 EXPOSE 3389
 

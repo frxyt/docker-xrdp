@@ -6,7 +6,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/frxyt/docker-xrdp.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/frxyt/docker-xrdp.svg)
 
-This image packages XRDP and VNC. *This image doesn't have any desktop installed by default, it is intended to be used as a base image.*
+This image packages XRDP and VNC.
 
 * Docker Hub: https://hub.docker.com/r/frxyt/xrdp
 * GitHub: https://github.com/frxyt/docker-xrdp
@@ -14,6 +14,16 @@ This image packages XRDP and VNC. *This image doesn't have any desktop installed
 ## Docker Hub Image
 
 **`frxyt/xrdp`**
+
+### Supported tags
+
+* **`frxyt/xrdp:cinnamon`**: with [Cinnamon](http://developer.linuxmint.com/projects/cinnamon-projects.html)
+* **`frxyt/xrdp:gnome`**: with [GNOME](https://www.gnome.org/)
+* **`frxyt/xrdp:kde`**: with [KDE](https://kde.org/)
+* **`frxyt/xrdp:latest`**: *without any desktop, only XRDP with VNC*
+* **`frxyt/xrdp:lxde`**: with [LXDE](https://lxde.org/)
+* **`frxyt/xrdp:mate`**: with [MATE](https://mate-desktop.org/)
+* **`frxyt/xrdp:xfce`**: with [Xfce](https://www.xfce.org/)
 
 ## Usage
 

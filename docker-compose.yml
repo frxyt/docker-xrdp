@@ -4,8 +4,8 @@ services:
   xrdp:
     image: frxyt/xrdp:latest
     build:
-      args: 
-        - DOCKER_TAG=cinnamon
+      #args: 
+      #  - DOCKER_TAG=xfce
       context: .
     ports:
       - "22000:22"

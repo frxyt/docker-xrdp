@@ -24,8 +24,8 @@ RUN     DEBIAN_FRONTEND=noninteractive apt-get update \
 # Set default environment variables
 ENV FRX_APTGET_DISTUPGRADE= \
     FRX_APTGET_INSTALL= \
-    FRX_INIT_CMD= \
-    FRX_START_CMD= \
+    FRX_CMD_INIT= \
+    FRX_CMD_START= \
     FRX_LOG_PREFIX_MAXLEN=6 \
     FRX_XRDP_CERT_SUBJ='/C=FX/ST=None/L=None/O=None/OU=None/CN=localhost' \
     FRX_XRDP_USER_NAME=debian \

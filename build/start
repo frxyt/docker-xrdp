@@ -9,10 +9,10 @@ cat /frx/version
 echo
 
 # Execute requested command if needed
-if [ -n "${FRX_INIT_CMD}" ]; then
-    echo "Executing command : '${FRX_INIT_CMD}' ..."
-    source <(echo "${FRX_INIT_CMD}")
-    unset FRX_INIT_CMD
+if [ -n "${FRX_CMD_INIT}" ]; then
+    echo "Executing command : '${FRX_CMD_INIT}' ..."
+    source <(echo "${FRX_CMD_INIT}")
+    unset FRX_CMD_INIT
 fi
 
 # Run apt-get upgrade & install asked packages if needed
@@ -76,10 +76,10 @@ dpkg-reconfigure -f noninteractive tzdata
 unset FRX_XRDP_CERT_SUBJ
 
 # Execute requested command if needed
-if [ -n "${FRX_START_CMD}" ]; then
-    echo "Executing command : '${FRX_START_CMD}' ..."
-    source <(echo "${FRX_START_CMD}")
-    unset FRX_START_CMD
+if [ -n "${FRX_CMD_START}" ]; then
+    echo "Executing command : '${FRX_CMD_START}' ..."
+    source <(echo "${FRX_CMD_START}")
+    unset FRX_CMD_START
 fi
 
 # Execute customs scripts if needed

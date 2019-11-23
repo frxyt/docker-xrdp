@@ -26,6 +26,7 @@ ENV FRX_APTGET_DISTUPGRADE= \
     FRX_APTGET_INSTALL= \
     FRX_INIT_CMD= \
     FRX_START_CMD= \
+    FRX_LOG_PREFIX_MAXLEN=6 \
     FRX_XRDP_CERT_SUBJ='/C=FX/ST=None/L=None/O=None/OU=None/CN=localhost' \
     FRX_XRDP_USER_NAME=debian \
     FRX_XRDP_USER_PASSWORD=ChangeMe \
@@ -36,6 +37,7 @@ ENV FRX_APTGET_DISTUPGRADE= \
     TZ=Etc/UTC
 
 # Copy assets
+COPY build/log                  /usr/local/bin/frx-log
 COPY build/start                /usr/local/sbin/frx-start
 COPY build/supervisord.conf     /etc/supervisor/supervisord.conf
 COPY build/xrdp.ini             /etc/xrdp/xrdp.ini
@@ -49,6 +51,7 @@ RUN     echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/ALL \
             -i /etc/ssh/sshd_config \
     &&  mkdir -p /run/sshd \
     &&  mkdir -p /var/run/dbus \
+    &&  mkdir -p /frx/entrypoint.d \
     &&  rm -f /etc/xrdp/cert.pem /etc/xrdp/key.pem /etc/xrdp/rsakeys.ini \
     &&  rm -f /etc/ssh/ssh_host_*
 

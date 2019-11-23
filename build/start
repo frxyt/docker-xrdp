@@ -6,6 +6,7 @@
 
 # Display version
 cat /frx/version
+echo
 
 # Execute requested command if needed
 if [ -n "${FRX_INIT_CMD}" ]; then
@@ -32,15 +33,16 @@ if ! id -u ${FRX_XRDP_USER_NAME} > /dev/null 2>&1; then
     echo ${FRX_XRDP_USER_NAME}:${FRX_XRDP_USER_PASSWORD} | /usr/sbin/chpasswd
     # Add user to sudo if needed
     [[ "${FRX_XRDP_USER_SUDO}" == '1' ]] && /usr/sbin/adduser ${FRX_XRDP_USER_NAME} sudo > /dev/null
-    # Copy default desktop icons
-    mkdir -p /home/${FRX_XRDP_USER_NAME}/Desktop
-    cp /usr/share/applications/*.desktop /home/${FRX_XRDP_USER_NAME}/Desktop
-    chown ${FRX_XRDP_USER_UID}:${FRX_XRDP_USER_GID} -R /home/${FRX_XRDP_USER_NAME}/Desktop
+    # Copy default desktop icons if needed
+    [[ "${FRX_XRDP_USER_COPY_SA}" == '1' ]] \
+        && mkdir -p /home/${FRX_XRDP_USER_NAME}/Desktop \
+        && cp /usr/share/applications/*.desktop /home/${FRX_XRDP_USER_NAME}/Desktop \
+        && chown ${FRX_XRDP_USER_UID}:${FRX_XRDP_USER_GID} -R /home/${FRX_XRDP_USER_NAME}/Desktop
     echo "[OK]"
 fi
 
 # Clear user ENV variables
-unset FRX_XRDP_USER_NAME FRX_XRDP_USER_PASSWORD FRX_XRDP_USER_SUDO FRX_XRDP_USER_GID FRX_XRDP_USER_UID
+unset FRX_XRDP_USER_NAME FRX_XRDP_USER_PASSWORD FRX_XRDP_USER_SUDO FRX_XRDP_USER_GID FRX_XRDP_USER_UID FRX_XRDP_USER_COPY_SA
 
 # Adjust TimeZone
 echo "Setting time zone to: '${TZ}' ..."
@@ -79,6 +81,12 @@ if [ -n "${FRX_START_CMD}" ]; then
     source <(echo "${FRX_START_CMD}")
     unset FRX_START_CMD
 fi
+
+# Execute customs scripts if needed
+for exe in $(find /frx/entrypoint.d -executable ! -type d | sort); do
+    echo "Executing entrypoint : '${exe}' ..."
+	/bin/bash ${exe}
+done
 
 # Start supervisor
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

@@ -20,7 +20,8 @@ RUN     DEBIAN_FRONTEND=noninteractive apt-get update \
             vim \
             xrdp \
     &&  apt-get clean -y && apt-get clean -y && apt-get autoclean -y && rm -r /var/lib/apt/lists/*
-    
+
+# Set default environment variables
 ENV FRX_APTGET_DISTUPGRADE= \
     FRX_APTGET_INSTALL= \
     FRX_INIT_CMD= \
@@ -31,12 +32,15 @@ ENV FRX_APTGET_DISTUPGRADE= \
     FRX_XRDP_USER_SUDO=1 \
     FRX_XRDP_USER_GID=1000 \
     FRX_XRDP_USER_UID=1000 \
+    FRX_XRDP_USER_COPY_SA=0 \
     TZ=Etc/UTC
 
+# Copy assets
 COPY build/start                /usr/local/sbin/frx-start
 COPY build/supervisord.conf     /etc/supervisor/supervisord.conf
 COPY build/xrdp.ini             /etc/xrdp/xrdp.ini
 
+# Configure installed packages
 RUN     echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/ALL \
     &&  sed -e 's/^#\?\(PermitRootLogin\)\s*.*$/\1 no/' \
             -e 's/^#\?\(PasswordAuthentication\)\s*.*$/\1 yes/' \
@@ -44,17 +48,20 @@ RUN     echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/ALL \
             -e 's/^#\?\(PubkeyAuthentication\)\s*.*$/\1 yes/' \
             -i /etc/ssh/sshd_config \
     &&  mkdir -p /run/sshd \
+    &&  mkdir -p /var/run/dbus \
     &&  rm -f /etc/xrdp/cert.pem /etc/xrdp/key.pem /etc/xrdp/rsakeys.ini \
     &&  rm -f /etc/ssh/ssh_host_*
 
+# Copy source files
 COPY Dockerfile LICENSE README.md /frx/
 
+# Prepare default desktop if needed & version information
 ARG DOCKER_TAG
 ARG SOURCE_BRANCH
 ARG SOURCE_COMMIT
 COPY build/desktop /usr/local/sbin/frx-desktop
 RUN     echo "[frxyt/xrdp:${DOCKER_TAG}] <https://github.com/frxyt/docker-xrdp>" > /frx/version \
-    &&  echo -e "[Version: ${SOURCE_BRANCH}@${SOURCE_COMMIT}]\n" >> /frx/version \
+    &&  echo "[version: ${SOURCE_BRANCH}@${SOURCE_COMMIT}]" >> /frx/version \
     &&  /usr/local/sbin/frx-desktop ${DOCKER_TAG}
 
 EXPOSE 22

@@ -18,8 +18,8 @@ This image packages XRDP and VNC.
 ### Supported tags
 
 * **`frxyt/xrdp:cinnamon`**: with [Cinnamon](http://developer.linuxmint.com/projects/cinnamon-projects.html)
-* **`frxyt/xrdp:gnome`**: with [GNOME](https://www.gnome.org/)
-* **`frxyt/xrdp:kde`**: with [KDE](https://kde.org/)
+* ~~**`frxyt/xrdp:gnome`**: with [GNOME](https://www.gnome.org/)~~
+* ~~**`frxyt/xrdp:kde`**: with [KDE](https://kde.org/)~~
 * **`frxyt/xrdp:latest`**: *without any desktop, only XRDP with VNC*
 * **`frxyt/xrdp:lxde`**: with [LXDE](https://lxde.org/)
 * **`frxyt/xrdp:mate`**: with [MATE](https://mate-desktop.org/)
@@ -27,11 +27,25 @@ This image packages XRDP and VNC.
 
 ## Usage
 
+### Try it
+
+1. Run an image with a pre-installed desktop:
+   * Cinnamon: `docker run --rm -p 33890:3389 frxyt/xrdp:cinnamon`
+   * ~~GNOME: `docker run --rm -p 33890:3389 frxyt/xrdp:gnome`~~
+   * ~~KDE: `docker run --rm -p 33890:3389 frxyt/xrdp:kde`~~
+   * LXDE: `docker run --rm -p 33890:3389 frxyt/xrdp:lxde`
+   * MATE: `docker run --rm -p 33890:3389 frxyt/xrdp:mate`
+   * Xfce: `docker run --rm -p 33890:3389 frxyt/xrdp:xfce`
+1. Start a RDP client:
+   * Windows: press `Win+R`, run `mstsc`, connect to: `localhost:33890`
+1. Enter default credentials: user `debian`, password `ChangeMe`
+1. Enjoy !
+
 ### Configurable environment variables
 
 These environment variables can be overriden to change the default behavior of the image and adapt it to your needs:
 
-| Name                     | Default value                                       | Example                                                     | Description
+| Name                     | Default value                                       | Example                                          | Description
 | :------------------------| :-------------------------------------------------- | :----------------------------------------------- | :----------
 | `FRX_APTGET_DISTUPGRADE` | ` ` *(Empty)*                                       | `1`                                              | Update installed packages
 | `FRX_APTGET_INSTALL`     | ` ` *(Empty)*                                       | `midori terminator`                              | Packages to install with `apt-get`
@@ -43,6 +57,7 @@ These environment variables can be overriden to change the default behavior of t
 | `FRX_XRDP_USER_SUDO`     | `1`                                                 | `0`                                              | Add default user to `sudoers` if set to `1`
 | `FRX_XRDP_USER_GID`      | `1000`                                              | `33`                                             | Default user ID (UID)
 | `FRX_XRDP_USER_UID`      | `1000`                                              | `33`                                             | Default user group ID (GID)
+| `FRX_XRDP_USER_COPY_SA`  | `0`                                                 | `1`                                              | Copy default icons to desktop if set to `1`
 | `TZ`                     | `Etc/UTC`                                           | `Europe/Paris`                                   | Default time zone
 
 ### Example
@@ -61,6 +76,14 @@ php:
   volumes:
     - ./home:/home:rw
 ```
+
+### Execute custom scripts upon startup
+
+You can copy your executable scripts in `/frx/entrypoint.d/` and they'll be executed in alphabetical order right before `supervisor` is started.
+
+### Start custom process in background
+
+You can use `supervisor` to start them and place all the services you need as `.conf` files in `/etc/supervisor/conf.d/`.
 
 ## Build
 

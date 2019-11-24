@@ -105,6 +105,7 @@ php:
          - |
            FRX_CMD_START=
            rm -f /var/run/apache2/apache2.pid
+           echo "UPDATE mysql.user SET Password=PASSWORD('root') WHERE User='root'; FLUSH PRIVILEGES;" > /etc/mysql/init.sql
            echo -e "[program:apache2]\ncommand=/usr/sbin/apache2ctl -DFOREGROUND" > /etc/supervisor/conf.d/apache2.conf
            echo -e "[program:mysqld]\ncommand=/usr/bin/mysqld_safe --init-file=/etc/mysql/init.sql" > /etc/supervisor/conf.d/mysqld.conf
        ports:

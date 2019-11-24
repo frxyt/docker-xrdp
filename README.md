@@ -63,20 +63,55 @@ These environment variables can be overriden to change the default behavior of t
 
 ### Example
 
+#### Basic example
+
 To run this image, you can use this sample `docker-compose.yml` file:
 
 ```yaml
 php:
-  image: frxyt/xrdp:latest
+  image: frxyt/xrdp:xfce
   environment:
-    - FRX_APTGET_INSTALL=task-xfce-desktop
-    - FRX_INIT_CMD=echo "startxfce4" > /etc/skel/.xsession
+    - FRX_XRDP_USER_NAME=john.doe
+    - FRX_XRDP_USER_PASSWORD=MyPassword
   ports:
     - "22000:22"
     - "3389:3389"
   volumes:
     - ./home:/home:rw
 ```
+
+#### Full PHP development environment with Apache, MySQL, DBeaver and VS Code
+
+1. Create this `docker-compose.yml` file:
+   ```yaml
+   version: '3.7'
+
+   services: 
+     xrdp:
+       image: frxyt/xrdp:xfce
+       environment:
+         - |
+           FRX_CMD_INIT=curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/packages.microsoft.gpg
+           echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/   vscode.list
+           curl -sSL https://dbeaver.io/debs/dbeaver.gpg.key | apt-key add -
+           echo "deb https://dbeaver.io/debs/dbeaver-ce /" > /etc/apt/sources.list.d/dbeaver.list
+         - |
+           FRX_APTGET_INSTALL=apache2 libapache2-mod-php
+           code
+           dbeaver-ce
+           default-mysql-server php-mysql php-pdo
+           firefox-esr
+           php php-bcmath php-cli php-common php-curl php-gd php-json php-mbstring php-pear php-xdebug php-xml php-zip
+         - |
+           FRX_CMD_START=
+           rm -f /var/run/apache2/apache2.pid
+           echo -e "[program:apache2]\ncommand=/usr/sbin/apache2ctl -DFOREGROUND" > /etc/supervisor/conf.d/apache2.conf
+           echo -e "[program:mysqld]\ncommand=/usr/bin/mysqld_safe --init-file=/etc/mysql/init.sql" > /etc/supervisor/conf.d/mysqld.conf
+       ports:
+         - "22000:22"
+         - "33890:3389"
+   ```
+1. Run `docker-compose up`
 
 ### Execute custom scripts upon startup
 

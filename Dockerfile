@@ -55,9 +55,6 @@ RUN     echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/ALL \
     &&  rm -f /etc/xrdp/cert.pem /etc/xrdp/key.pem /etc/xrdp/rsakeys.ini \
     &&  rm -f /etc/ssh/ssh_host_*
 
-# Copy source files
-COPY Dockerfile LICENSE README.md /frx/
-
 # Prepare default desktop if needed & version information
 ARG DOCKER_TAG
 ARG SOURCE_BRANCH
@@ -66,6 +63,9 @@ COPY build/desktop /usr/local/sbin/frx-desktop
 RUN     echo "[frxyt/xrdp:${DOCKER_TAG}] <https://github.com/frxyt/docker-xrdp>" > /frx/version \
     &&  echo "[version: ${SOURCE_BRANCH}@${SOURCE_COMMIT}]" >> /frx/version \
     &&  /usr/local/sbin/frx-desktop ${DOCKER_TAG}
+
+# Copy source files
+COPY Dockerfile LICENSE README.md /frx/
 
 EXPOSE 22
 EXPOSE 3389
